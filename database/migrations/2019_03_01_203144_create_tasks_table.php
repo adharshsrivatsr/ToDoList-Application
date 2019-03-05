@@ -18,8 +18,9 @@ class CreateTasksTable extends Migration
             $table->timestamps();
             $table->string('task');
             $table->timestamp('completed_at')->nullable();
-            $table->timestamp('deleted_at')->nullable();
-
+            //$table->timestamp('deleted_at')->nullable();
+            $table->boolean('status')->default(0);
+            $table->softDeletes();
         });
     }
 
