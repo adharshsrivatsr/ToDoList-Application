@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTasksPrioritiesTable extends Migration
+class CreatePivotsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateTasksPrioritiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tasks_priorities', function (Blueprint $table) {
-           
+        Schema::create('pivots', function (Blueprint $table) {
             $table->unsignedInteger('task_id');
             $table->unsignedInteger('priority_id');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->foreign('priority_id')->references('id')->on('priorities')->onDelete('cascade');
             $table->timestamps();
-            
         });
     }
 
@@ -31,6 +29,6 @@ class CreateTasksPrioritiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tasks_priorities');
+        Schema::dropIfExists('pivots');
     }
 }

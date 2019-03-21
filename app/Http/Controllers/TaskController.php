@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\Priority;
 use Illuminate\Http\Request;
 
-class TasksController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +15,8 @@ class TasksController extends Controller
      */
     public function index()
     {
-        //
-        $tasks= Task::all();
-        return $tasks;
-        //view('tasks.index',compact('tasks'));
+        $data= Task::with('priorities')->get();
+        return $data;
     }
 
     /**
