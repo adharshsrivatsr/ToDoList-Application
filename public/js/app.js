@@ -1796,12 +1796,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       items: [],
-      priorities: [],
       showInput: 0,
+      name: [],
+      priority: [],
+      errors: [],
+      edit: 0,
       fields: [{
         key: 'name',
         sortable: true
@@ -1817,6 +1849,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         key: 'updated_at',
         sortable: true
+      }, {
+        key: ' '
       }]
     };
   },
@@ -1831,12 +1865,29 @@ __webpack_require__.r(__webpack_exports__);
         _this.items = response.data;
       });
     },
-    finished: function finished() {
-      if (this.item.status = "0") this.complete = 0;
-    },
     addActivity: function addActivity() {
       this.showInput = !this.showInput;
-    }
+      this.name = '';
+    },
+    onSubmit: function onSubmit() {
+      var _this2 = this;
+
+      axios.post('/tasks', this.$data).catch(function (error) {
+        return _this2.errors = error.response.data;
+      });
+      window.location.reload();
+      this.showInput = 0;
+    },
+    showActivity: function showActivity() {} //this.edit=1;
+    // changeStatus:function() {
+    //     this.status=!this.status
+    //     if(this.status == true)
+    //         document.getElementById("status").innerHTML = "Completed";
+    //     else
+    //         document.getElementById("status").innerHTML = "Incomplete";
+    //     console.log(this.status)
+    // }
+
   }
 });
 
@@ -39739,7 +39790,44 @@ var render = function() {
             fn: function(ref) {
               var item = ref.item
               return [
-                _vm._v("\n            " + _vm._s(item.name) + "\n        ")
+                _vm.edit
+                  ? _c("div", [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.name,
+                            expression: "name"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        staticStyle: { height: "30px" },
+                        attrs: {
+                          type: "text",
+                          name: "name",
+                          required: "",
+                          minlength: "3",
+                          autocomplete: "off"
+                        },
+                        domProps: { value: _vm.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.name = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  : _c("div", [
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(item.name) +
+                          "\n            "
+                      )
+                    ])
               ]
             }
           },
@@ -39784,6 +39872,22 @@ var render = function() {
                 ])
               })
             }
+          },
+          {
+            key: " ",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                _c(
+                  "button",
+                  {
+                    staticClass: "button is-primary",
+                    on: { click: _vm.showActivity }
+                  },
+                  [_vm._v("Show info")]
+                )
+              ]
+            }
           }
         ])
       }),
@@ -39791,7 +39895,18 @@ var render = function() {
       _c("div", { staticClass: "control" }, [
         _c(
           "button",
-          { staticClass: "button is-primary", on: { click: _vm.addActivity } },
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.showInput,
+                expression: "!showInput"
+              }
+            ],
+            staticClass: "button is-primary",
+            on: { click: _vm.addActivity }
+          },
           [_vm._v("Add Activity")]
         ),
         _vm._v(" "),
@@ -39807,14 +39922,237 @@ var render = function() {
               }
             ]
           },
-          [_vm._v("\n            Input form\n        ")]
+          [
+            _c(
+              "form",
+              {
+                attrs: { method: "POST", action: "/tasks" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.onSubmit($event)
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "control" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.name,
+                        expression: "name"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    staticStyle: { height: "30px" },
+                    attrs: {
+                      type: "text",
+                      placeholder: "Enter task here",
+                      name: "name",
+                      required: "",
+                      minlength: "3",
+                      autocomplete: "off"
+                    },
+                    domProps: { value: _vm.name },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.name = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "control" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.priority,
+                        expression: "priority"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "checkbox", value: "Important", size: "22" },
+                    domProps: {
+                      checked: Array.isArray(_vm.priority)
+                        ? _vm._i(_vm.priority, "Important") > -1
+                        : _vm.priority
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.priority,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = "Important",
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.priority = $$a.concat([$$v]))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.priority = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
+                        } else {
+                          _vm.priority = $$c
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" Important "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.priority,
+                        expression: "priority"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "checkbox", value: "Urgent", size: "22" },
+                    domProps: {
+                      checked: Array.isArray(_vm.priority)
+                        ? _vm._i(_vm.priority, "Urgent") > -1
+                        : _vm.priority
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.priority,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = "Urgent",
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.priority = $$a.concat([$$v]))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.priority = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
+                        } else {
+                          _vm.priority = $$c
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" Urgent "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.priority,
+                        expression: "priority"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "checkbox", value: "Ignore", size: "22" },
+                    domProps: {
+                      checked: Array.isArray(_vm.priority)
+                        ? _vm._i(_vm.priority, "Ignore") > -1
+                        : _vm.priority
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.priority,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = "Ignore",
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.priority = $$a.concat([$$v]))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.priority = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
+                        } else {
+                          _vm.priority = $$c
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" Ignore "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.priority,
+                        expression: "priority"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "checkbox", value: "Optional", size: "22" },
+                    domProps: {
+                      checked: Array.isArray(_vm.priority)
+                        ? _vm._i(_vm.priority, "Optional") > -1
+                        : _vm.priority
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.priority,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = "Optional",
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.priority = $$a.concat([$$v]))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.priority = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
+                        } else {
+                          _vm.priority = $$c
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" Optional "),
+                  _c("br")
+                ]),
+                _vm._v(" "),
+                _vm._m(0)
+              ]
+            )
+          ]
         )
       ])
     ],
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "control" }, [
+      _c("button", { staticClass: "button is-primary" }, [_vm._v("Submit!")])
+    ])
+  }
+]
 render._withStripped = true
 
 

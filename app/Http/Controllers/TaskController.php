@@ -37,7 +37,21 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name'=>'required'
+            
+        ]);
+        
+        $task=new Task();
+        $task->name=$request['name'];
+        $task->save();
+        $priorityIds=[];
+        foreach ($request->priority as $priority) {
+            $priorityIds[]=Priority::where('priority',$priority)->first()->id;
+        }
+        $task->priorities()->attach($priorityIds);
+
+        return ['message' => 'Success'];
     }
 
     /**
