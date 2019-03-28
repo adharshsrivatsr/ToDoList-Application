@@ -1898,7 +1898,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     editRow: function editRow() {
       this.showMod = !this.showMod;
-      console.log(this.showMod);
+      console.log(this.showMod); //this prints true
     }
   }
 });
@@ -59719,9 +59719,8 @@ var render = function() {
                   },
                   [_vm._v("Show more")]
                 ),
-                _vm._v(
-                  "\n            " + _vm._s(_vm.showMod) + "\n            "
-                ),
+                _vm._v("\n            " + _vm._s(_vm.showMod) + " "),
+                _vm._v(" "),
                 _vm.showMod ? _c("edit", [_vm._v(_vm._s(item.name))]) : _vm._e()
               ]
             }

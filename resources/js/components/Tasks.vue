@@ -23,8 +23,8 @@
 
             <template slot=' ' slot-scope='{item}'>
                 <button class="button is-primary" @click="editRow">Show more</button>
-                {{showMod}}
-                <edit v-if="showMod">{{item.name}}</edit>
+                {{showMod}} <!-- this prints false -->
+                <edit v-if="showMod">{{item.name}}</edit> <!--not displayed --> 
             </template>
      
         </b-table>
@@ -111,7 +111,7 @@
             },
 
           
-            addTask:function() {
+            addTask: function() {
                
                this.showInput= !this.showInput
                this.name='';
@@ -119,7 +119,7 @@
             
             },
 
-            onSubmit:function() {
+            onSubmit: function() {
               
                 axios.post('/tasks', this.$data)
                     .catch(error=> this.errors=error.response.data);
@@ -131,7 +131,7 @@
 
             editRow: function() {
                 this.showMod= !this.showMod;
-                console.log(this.showMod);
+                console.log(this.showMod); //this prints true
             }
         }
     }
