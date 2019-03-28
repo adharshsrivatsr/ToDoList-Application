@@ -23,8 +23,8 @@
 
             <template slot=' ' slot-scope='{item}'>
                 <button class="button is-primary" @click="editRow">Show more</button>
-                     {{showMod}}
-                     <edit v-show="showMod">{{item.name}}</edit>
+                {{showMod}}
+                <edit v-if="showMod">{{item.name}}</edit>
             </template>
      
         </b-table>

@@ -59720,24 +59720,9 @@ var render = function() {
                   [_vm._v("Show more")]
                 ),
                 _vm._v(
-                  "\n                 " +
-                    _vm._s(_vm.showMod) +
-                    "\n                 "
+                  "\n            " + _vm._s(_vm.showMod) + "\n            "
                 ),
-                _c(
-                  "edit",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.showMod,
-                        expression: "showMod"
-                      }
-                    ]
-                  },
-                  [_vm._v(_vm._s(item.name))]
-                )
+                _vm.showMod ? _c("edit", [_vm._v(_vm._s(item.name))]) : _vm._e()
               ]
             }
           }
