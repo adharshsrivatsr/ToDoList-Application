@@ -1897,7 +1897,7 @@ __webpack_require__.r(__webpack_exports__);
       this.showInput = 0;
     },
     editRow: function editRow() {
-      this.showMod = 1;
+      this.showMod = !this.showMod;
       console.log(this.showMod);
     }
   }
@@ -59719,7 +59719,11 @@ var render = function() {
                   },
                   [_vm._v("Show more")]
                 ),
-                _vm._v("\n             " + _vm._s(_vm.showMod) + "\n        "),
+                _vm._v(
+                  "\n                 " +
+                    _vm._s(_vm.showMod) +
+                    "\n                 "
+                ),
                 _c(
                   "edit",
                   {

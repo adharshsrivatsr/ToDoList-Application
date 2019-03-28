@@ -22,9 +22,9 @@
             </template>
 
             <template slot=' ' slot-scope='{item}'>
-            <button class="button is-primary" @click="editRow">Show more</button>
-                 {{showMod}}
-            <edit v-show="showMod">{{item.name}}</edit>
+                <button class="button is-primary" @click="editRow">Show more</button>
+                     {{showMod}}
+                     <edit v-show="showMod">{{item.name}}</edit>
             </template>
      
         </b-table>
@@ -130,7 +130,7 @@
             },
 
             editRow: function() {
-                this.showMod= 1;
+                this.showMod= !this.showMod;
                 console.log(this.showMod);
             }
         }
