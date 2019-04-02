@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-table  :items="items" :fields="fields" hover  fixed show-empty>
+        <b-table  editable :items="items" :fields="fields" hover  fixed show-empty>
             <template slot='name' slot-scope="{item}">
                      {{item.name}}
             </template>
@@ -16,62 +16,66 @@
             </template>
 
             <template slot='priority' slot-scope='{item}'>
-                <li v-for='prio in item.priorities'>
+                <li v-for='prio in item.priorities' :key="prio.id">
                     {{prio.priority}} 
                 </li>
             </template>
-
+            
             <template slot=' ' slot-scope='{item}'>
-                <button class="button is-primary" @click="editRow">Show more</button>
-                {{showMod}} <!-- this prints false -->
-                <edit v-if="showMod">{{item.name}}</edit> <!--not displayed --> 
+                <div>
+                    <button class="button is-primary" @click="editRow(item.id)">Show more</button>
+                    <edit ref="modal" v-show="showModal" :initial_id="id" :edit="edit" :initial_name="name" :initial_status="status" :initial_prio="prio" ></edit>
+                </div>  
             </template>
      
         </b-table>
 
         <div class="control">
-               <button class="button is-primary" v-show="!showInput" @click="addTask" >Add Task</button>
+               <button class="button is-primary" v-show="!showInput" @click="showInput= !showInput" >Add Task</button>
                <div v-show='showInput'>
-                    {{showInput}}
-                    <form method="POST" action='/tasks' @submit.prevent='onSubmit'>
-             
-                        <div class='control'>
-                            <input type='text' placeholder='Enter task here' name='name' v-model='name' required minlength=3 autocomplete="off"  style='height:30px'>
+                    <div class='control'>
+                            <input type='text' placeholder='Enter task here' v-model='name' required minlength=3 autocomplete="off"  style='height:30px'>
                         </div>
                         <div class='control'>
-                            <input type='checkbox' value='Important'   v-model='priority' > Important <br>
+                            <input type='checkbox' value='Important' v-model='priority' > Important <br>
                             <input type='checkbox' value='Urgent' size='22' v-model='priority' /> Urgent <br>
                             <input type='checkbox' value='Ignore' size='22' v-model='priority' /> Ignore <br>
                             <input type='checkbox' value='Optional' size='22' v-model='priority'/> Optional <br>
                         </div>
-                        <div class='control'>
-                            <button class='button is-primary'>Submit!</button>
-                        </div>
-                    </form>
+                        
+                        <div> <p id="err"><font color="red"></font></p> </div>
 
+                        <div class='control'>
+                            <button class='button is-primary' @click='onSubmit'>Submit!</button>
+                        </div>
+                    </div>
                 </div>
         </div>
-        
-    </div>
     
 </template>
 
 <script>
-    import Edit from './Edit.vue';
+    import edit from './Edit.vue';
 
     export default {
 
-        components:{Edit},
+       components:{edit},
 
         data() {
             return {
                 items: [],
                 showInput:0,
-                name:[],
-                showMod:0,
+                showModal:false,
+                prio:[ ], 
                 priority:[],
                 errors:[],
+                edit:true,
+                active:1,
+                id:0,
                 edit:0,
+                name:"",
+                status:"",
+                toPass:[],
                 fields:[
                     {
                         key:'name',
@@ -86,11 +90,6 @@
                         key:'status',
                         sortable:true
                     },
-                
-                    {
-                        key:'updated_at',
-                        sortable:true
-                    },
                     {
                         key: ' '
                     }     
@@ -99,42 +98,51 @@
         },
         created: function () {
             this.getTasks()
+       
         },
         methods: {
             getTasks: function () {
                 axios.get('/tasks')
                     .then(response => {
                         this.items = response.data
-                
-                    })  
+                  })  
                     
-            },
-
-          
-            addTask: function() {
-               
-               this.showInput= !this.showInput
-               this.name='';
-               
-            
             },
 
             onSubmit: function() {
               
-                axios.post('/tasks', this.$data)
+             if(this.$data.priority.length==0 )
+             {
+                document.getElementById("err").innerHTML = "Select atleast one priority!"
+             }
+            
+            else
+            {    
+            axios.post('/tasks', this.$data)
                     .catch(error=> this.errors=error.response.data);
-                
-                window.location.reload();
+                 console.log(this.$data)
+                //window.location.reload();
                 this.showInput=0;
-                
+            }
             },
 
-            editRow: function() {
-                this.showMod= !this.showMod;
-                console.log(this.showMod); //this prints true
+            editRow: function(id) {
+             //   this.showModal= id;
+                let test = this.items.find(x=>x.id===id);
+                
+                this.name=test.name
+                this.id=test.id
+                this.status=test.status
+                this.prio=[ ]
+                this.edit=0
+                test.priorities.forEach(p => this.prio.push(p.priority))
+                
+               // console.log(this.prio)
+
+                let element = this.$refs.modal.$el
+                $(element).modal('show')
             }
         }
     }
 </script>
-
 

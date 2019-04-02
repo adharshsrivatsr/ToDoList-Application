@@ -38,7 +38,8 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=>'required'
+            'name'=>'required',
+            'priority'=>'required'
             
         ]);
         
@@ -50,8 +51,7 @@ class TaskController extends Controller
             $priorityIds[]=Priority::where('priority',$priority)->first()->id;
         }
         $task->priorities()->attach($priorityIds);
-
-        return ['message' => 'Success'];
+     
     }
 
     /**
@@ -85,7 +85,24 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $this->validate($request, [
+            'name'=>'required',
+            'priority'=>'required'
+            
+        ]);
+
+        $task->name=$request["name"];
+        $task->status=$request["status"];
+        //$task->completed_at=$request["time"];
+        $task->save();
+
+        $priorityIds=[];
+        foreach ($request->priority as $priority) {
+            $priorityIds[]=Priority::where('priority',$priority)->first()->id;
+        }
+        
+        $task->priorities()->sync($priorityIds);
+        
     }
 
     /**
@@ -96,6 +113,6 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
     }
 }
