@@ -1821,8 +1821,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["initial_name", "initial_status", "initial_prio", "edit", "initial_id"],
+  props: ["initial_name", "initial_status", "initial_prio", "edit", "initial_id", "completed_at", "updated_at"],
   data: function data() {
     return {
       //    name:"",
@@ -1831,23 +1843,50 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    getTasks: function getTasks() {
+      var _this = this;
+
+      axios.get('/tasks').then(function (response) {
+        _this.items = response.data;
+      });
+    },
     editVal: function editVal() {
       this.edit = 1;
     },
     onSubmit: function onSubmit() {
+      if (this.initial_status == 0) {
+        this.time = null;
+      }
+
+      if (this.initial_name.length < 3) {
+        alert('Task name should have atleast 3 characters!');
+        return;
+      }
+
+      if (this.initial_prio.length == 0) {
+        alert('Choose atleast one priority!!');
+        return;
+      }
+
       axios.put('/tasks/' + this.initial_id, {
         name: this.initial_name,
         id: this.initial_id,
+        time: this.time,
         priority: this.initial_prio,
         status: this.initial_status
-      });
-      window.location.reload();
+      }); //    this.showModal=false;
+      // this.getTasks();
+
+      window.location.reload(); // $('#showModal').modal('hide');
     },
     deleteTask: function deleteTask() {
       if (confirm("Are you sure bro?")) {
         axios.delete('/tasks/' + this.initial_id);
-        window.location.reload();
       }
+
+      this.showModal = false; // this.getTasks();
+
+      window.location.reload();
     },
     recordTime: function recordTime() {
       this.time = Date();
@@ -1925,6 +1964,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1936,14 +1979,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return _ref = {
       items: [],
       showInput: 0,
-      showModal: false,
       prio: [],
       priority: [],
       errors: [],
       edit: true,
       active: 1,
       id: 0
-    }, _defineProperty(_ref, "edit", 0), _defineProperty(_ref, "name", ""), _defineProperty(_ref, "status", ""), _defineProperty(_ref, "toPass", []), _defineProperty(_ref, "fields", [{
+    }, _defineProperty(_ref, "edit", 0), _defineProperty(_ref, "name", ""), _defineProperty(_ref, "status", ""), _defineProperty(_ref, "completed_at", ""), _defineProperty(_ref, "updated_at", ""), _defineProperty(_ref, "toPass", []), _defineProperty(_ref, "fields", [{
       key: 'name',
       sortable: true
     }, {
@@ -1968,21 +2010,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     onSubmit: function onSubmit() {
-      var _this2 = this;
+      if (this.name.length < 3) {
+        alert('Task name should have atleast 3 characters!');
+        return;
+      }
 
       if (this.$data.priority.length == 0) {
-        document.getElementById("err").innerHTML = "Select atleast one priority!";
-      } else {
-        axios.post('/tasks', this.$data).catch(function (error) {
-          return _this2.errors = error.response.data;
-        });
-        console.log(this.$data); //window.location.reload();
-
-        this.showInput = 0;
+        alert('Choose atleast one priority!!');
+        return;
       }
+
+      axios.post('/tasks', this.$data);
+      this.showInput = 0; // this.getTasks();
+
+      window.location.reload();
     },
     editRow: function editRow(id) {
-      var _this3 = this;
+      var _this2 = this;
 
       //   this.showModal= id;
       var test = this.items.find(function (x) {
@@ -1991,12 +2035,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.name = test.name;
       this.id = test.id;
       this.status = test.status;
+      this.completed_at = test.completed_at;
+      this.updated_at = test.updated_at;
       this.prio = [];
       this.edit = 0;
       test.priorities.forEach(function (p) {
-        return _this3.prio.push(p.priority);
-      }); // console.log(this.prio)
-
+        return _this2.prio.push(p.priority);
+      });
+      console.log(this.completed_at);
       var element = this.$refs.modal.$el;
       $(element).modal('show');
     }
@@ -59718,7 +59764,13 @@ var render = function() {
     "div",
     {
       staticClass: "modal fade",
-      attrs: { tabindex: "-1", role: "dialog", "aria-hidden": "true" }
+      attrs: {
+        id: "showModal",
+        tabindex: "-1",
+        role: "dialog",
+        "aria-hidden": "true",
+        "data-backdrop": "static"
+      }
     },
     [
       _c("div", { staticClass: "modal-dialog" }, [
@@ -59754,15 +59806,26 @@ var render = function() {
               })
             ]),
             _vm._v(" "),
-            _vm._m(0)
+            _c(
+              "button",
+              {
+                staticClass: "close",
+                attrs: { type: "button", "data-dismiss": "modal" },
+                on: {
+                  click: function($event) {
+                    _vm.edit = 0
+                  }
+                }
+              },
+              [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+            )
           ]),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "modal-body" },
-            [
-              _vm.edit == 1
-                ? _c("div", { staticClass: "control" }, [
+          _c("div", { staticClass: "modal-body" }, [
+            _vm.edit == 1
+              ? _c("div", { staticClass: "control" }, [
+                  _c("pre", { staticClass: "scrollable" }, [
+                    _vm._v("                        "),
                     _c("input", {
                       directives: [
                         {
@@ -59802,7 +59865,7 @@ var render = function() {
                     }),
                     _vm._v(" Important "),
                     _c("br"),
-                    _vm._v(" "),
+                    _vm._v("\n                        "),
                     _c("input", {
                       directives: [
                         {
@@ -59842,47 +59905,7 @@ var render = function() {
                     }),
                     _vm._v(" Urgent "),
                     _c("br"),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.initial_prio,
-                          expression: "initial_prio"
-                        }
-                      ],
-                      attrs: { type: "checkbox", value: "Ignore", size: "22" },
-                      domProps: {
-                        checked: Array.isArray(_vm.initial_prio)
-                          ? _vm._i(_vm.initial_prio, "Ignore") > -1
-                          : _vm.initial_prio
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.initial_prio,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = "Ignore",
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.initial_prio = $$a.concat([$$v]))
-                            } else {
-                              $$i > -1 &&
-                                (_vm.initial_prio = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
-                            }
-                          } else {
-                            _vm.initial_prio = $$c
-                          }
-                        }
-                      }
-                    }),
-                    _vm._v(" Ignore "),
-                    _c("br"),
-                    _vm._v(" "),
+                    _vm._v("\n                        "),
                     _c("input", {
                       directives: [
                         {
@@ -59925,81 +59948,194 @@ var render = function() {
                       }
                     }),
                     _vm._v(" Optional "),
-                    _c("br")
+                    _c("br"),
+                    _vm._v("\n                        "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.initial_prio,
+                          expression: "initial_prio"
+                        }
+                      ],
+                      attrs: { type: "checkbox", value: "Ignore", size: "22" },
+                      domProps: {
+                        checked: Array.isArray(_vm.initial_prio)
+                          ? _vm._i(_vm.initial_prio, "Ignore") > -1
+                          : _vm.initial_prio
+                      },
+                      on: {
+                        change: function($event) {
+                          var $$a = _vm.initial_prio,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = "Ignore",
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 && (_vm.initial_prio = $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                (_vm.initial_prio = $$a
+                                  .slice(0, $$i)
+                                  .concat($$a.slice($$i + 1)))
+                            }
+                          } else {
+                            _vm.initial_prio = $$c
+                          }
+                        }
+                      }
+                    }),
+                    _vm._v(" Ignore "),
+                    _c("br"),
+                    _vm._v("\n                    ")
                   ])
-                : _vm._l(_vm.initial_prio, function(p) {
-                    return _c("div", { key: p }, [
-                      _vm._v(
-                        "\n                    \n                        " +
-                          _vm._s(p) +
-                          "\n                        \n                    "
-                      )
+                ])
+              : _c(
+                  "div",
+                  _vm._l(_vm.initial_prio, function(p) {
+                    return _c("b", { key: p }, [
+                      p == "Urgent"
+                        ? _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v("Urgent")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      p == "Important"
+                        ? _c("span", { staticClass: "badge badge-primary" }, [
+                            _vm._v("Important")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      p == "Optional"
+                        ? _c("span", { staticClass: "badge badge-info" }, [
+                            _vm._v("Optional")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      p == "Ignore"
+                        ? _c("span", { staticClass: "badge badge-secondary" }, [
+                            _vm._v("Ignore")
+                          ])
+                        : _vm._e()
                     ])
-                  })
-            ],
-            2
-          ),
+                  }),
+                  0
+                ),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _vm.edit == 0
+              ? _c("div", [
+                  _c("i", {
+                    staticClass: "fa fa-clock-o",
+                    staticStyle: { "font-size": "36px" }
+                  }),
+                  _vm._v(
+                    " The task was recently updated on " +
+                      _vm._s(_vm.updated_at) +
+                      " \n                "
+                  )
+                ])
+              : _vm._e()
+          ]),
           _vm._v(" "),
           _vm.edit == 0
             ? _c("div", [
                 _vm.initial_status == "0"
-                  ? _c(
-                      "div",
-                      [
-                        _c("font", { attrs: { color: "red" } }, [
-                          _vm._v("The activity is incomplete!")
-                        ])
-                      ],
-                      1
-                    )
+                  ? _c("div", { staticClass: "alert alert-danger" }, [
+                      _vm._v(
+                        "\n                The activity is incomplete!\n            "
+                      )
+                    ])
                   : _c(
                       "div",
+                      { staticClass: "alert alert-success" },
                       [
                         _c("font", { attrs: { color: "green" } }, [
-                          _vm._v("You have completed the activity!")
+                          _vm._v(
+                            "You completed this activity on  " +
+                              _vm._s(_vm.completed_at) +
+                              "!"
+                          )
                         ])
                       ],
                       1
                     )
               ])
             : _c("div", [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.initial_status,
-                      expression: "initial_status"
-                    }
-                  ],
-                  attrs: { type: "radio", value: "0" },
-                  domProps: { checked: _vm._q(_vm.initial_status, "0") },
-                  on: {
-                    change: function($event) {
-                      _vm.initial_status = "0"
-                    }
-                  }
-                }),
-                _vm._v("Incomplete\n                "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.initial_status,
-                      expression: "initial_status"
-                    }
-                  ],
-                  attrs: { type: "radio", value: "1" },
-                  domProps: { checked: _vm._q(_vm.initial_status, "1") },
-                  on: {
-                    click: _vm.recordTime,
-                    change: function($event) {
-                      _vm.initial_status = "1"
-                    }
-                  }
-                }),
-                _vm._v("Complete\n            ")
+                _c(
+                  "div",
+                  {
+                    staticClass: "custom-control custom-switch",
+                    staticStyle: { "text-align": "center" }
+                  },
+                  [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.initial_status,
+                          expression: "initial_status"
+                        }
+                      ],
+                      staticClass: "custom-control-input",
+                      attrs: { type: "checkbox", id: "switch1" },
+                      domProps: {
+                        checked: Array.isArray(_vm.initial_status)
+                          ? _vm._i(_vm.initial_status, null) > -1
+                          : _vm.initial_status
+                      },
+                      on: {
+                        click: _vm.recordTime,
+                        change: function($event) {
+                          var $$a = _vm.initial_status,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 &&
+                                (_vm.initial_status = $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                (_vm.initial_status = $$a
+                                  .slice(0, $$i)
+                                  .concat($$a.slice($$i + 1)))
+                            }
+                          } else {
+                            _vm.initial_status = $$c
+                          }
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.initial_status == 0
+                      ? _c(
+                          "label",
+                          {
+                            staticClass: "custom-control-label",
+                            attrs: { for: "switch1" }
+                          },
+                          [_c("b", [_vm._v(" Incomplete ")])]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.initial_status == 1
+                      ? _c(
+                          "label",
+                          {
+                            staticClass: "custom-control-label",
+                            attrs: { for: "switch1" }
+                          },
+                          [_c("b", [_vm._v("Complete")])]
+                        )
+                      : _vm._e()
+                  ]
+                )
               ]),
           _vm._v(" "),
           _c("div", { staticClass: "modal-footer" }, [
@@ -60018,7 +60154,7 @@ var render = function() {
               ? _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-danger",
                     on: { click: _vm.deleteTask }
                   },
                   [_vm._v(" Delete ")]
@@ -60029,7 +60165,7 @@ var render = function() {
               ? _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-success",
                     on: { click: _vm.onSubmit }
                   },
                   [_vm._v(" Submit ")]
@@ -60041,21 +60177,7 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: { type: "button", "data-dismiss": "modal" }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -60094,9 +60216,7 @@ var render = function() {
             key: "name",
             fn: function(ref) {
               var item = ref.item
-              return [
-                _vm._v("\n                 " + _vm._s(item.name) + "\n        ")
-              ]
+              return [_c("div", [_c("b", [_vm._v(_vm._s(item.name))])])]
             }
           },
           {
@@ -60105,24 +60225,28 @@ var render = function() {
               var item = ref.item
               return [
                 item.status == "0"
-                  ? _c(
-                      "div",
-                      [
-                        _c("font", { attrs: { color: "red" } }, [
-                          _vm._v("Incomplete")
-                        ])
-                      ],
-                      1
-                    )
-                  : _c(
-                      "div",
-                      [
-                        _c("font", { attrs: { color: "green" } }, [
-                          _vm._v("Complete")
-                        ])
-                      ],
-                      1
-                    )
+                  ? _c("div", [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "progress-bar bg-danger progress-bar-striped",
+                          staticStyle: { width: "50%" }
+                        },
+                        [_vm._v("Incomplete")]
+                      )
+                    ])
+                  : _c("div", [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "progress-bar bg-success progress-bar-striped",
+                          staticStyle: { width: "100%" }
+                        },
+                        [_vm._v("Completed")]
+                      )
+                    ])
               ]
             }
           },
@@ -60131,12 +60255,30 @@ var render = function() {
             fn: function(ref) {
               var item = ref.item
               return _vm._l(item.priorities, function(prio) {
-                return _c("li", { key: prio.id }, [
-                  _vm._v(
-                    "\n                " +
-                      _vm._s(prio.priority) +
-                      " \n            "
-                  )
+                return _c("b", { key: prio.id }, [
+                  prio.priority == "Urgent"
+                    ? _c("span", { staticClass: "badge badge-danger" }, [
+                        _vm._v("Urgent")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  prio.priority == "Important"
+                    ? _c("span", { staticClass: "badge badge-primary" }, [
+                        _vm._v("Important")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  prio.priority == "Optional"
+                    ? _c("span", { staticClass: "badge badge-info" }, [
+                        _vm._v("Optional")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  prio.priority == "Ignore"
+                    ? _c("span", { staticClass: "badge badge-secondary" }, [
+                        _vm._v("Ignore")
+                      ])
+                    : _vm._e()
                 ])
               })
             }
@@ -60152,7 +60294,8 @@ var render = function() {
                     _c(
                       "button",
                       {
-                        staticClass: "button is-primary",
+                        staticClass: "button btn-warning",
+                        staticStyle: { float: "right" },
                         on: {
                           click: function($event) {
                             return _vm.editRow(item.id)
@@ -60163,16 +60306,10 @@ var render = function() {
                     ),
                     _vm._v(" "),
                     _c("edit", {
-                      directives: [
-                        {
-                          name: "show",
-                          rawName: "v-show",
-                          value: _vm.showModal,
-                          expression: "showModal"
-                        }
-                      ],
                       ref: "modal",
                       attrs: {
+                        updated_at: _vm.updated_at,
+                        completed_at: _vm.completed_at,
                         initial_id: _vm.id,
                         edit: _vm.edit,
                         initial_name: _vm.name,
@@ -60189,7 +60326,7 @@ var render = function() {
         ])
       }),
       _vm._v(" "),
-      _c("div", { staticClass: "control" }, [
+      _c("div", { staticClass: "container" }, [
         _c(
           "button",
           {
@@ -60202,13 +60339,21 @@ var render = function() {
               }
             ],
             staticClass: "button is-primary",
+            staticStyle: {
+              float: "right",
+              "border-radius": "55px",
+              width: "55px",
+              height: "55px",
+              "font-size": "35px",
+              "line-height": "5px"
+            },
             on: {
               click: function($event) {
                 _vm.showInput = !_vm.showInput
               }
             }
           },
-          [_vm._v("Add Task")]
+          [_c("b", [_vm._v("+")])]
         ),
         _vm._v(" "),
         _c(
@@ -60221,7 +60366,8 @@ var render = function() {
                 value: _vm.showInput,
                 expression: "showInput"
               }
-            ]
+            ],
+            staticClass: "jumbotron"
           },
           [
             _c("div", { staticClass: "control" }, [
@@ -60237,7 +60383,7 @@ var render = function() {
                 staticStyle: { height: "30px" },
                 attrs: {
                   type: "text",
-                  placeholder: "Enter task here",
+                  placeholder: "Enter task name",
                   required: "",
                   minlength: "3",
                   autocomplete: "off"
@@ -60251,8 +60397,12 @@ var render = function() {
                     _vm.name = $event.target.value
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _c("br")
             ]),
+            _vm._v(" "),
+            _c("br"),
             _vm._v(" "),
             _c("div", { staticClass: "control" }, [
               _c("input", {
@@ -60344,46 +60494,6 @@ var render = function() {
                     expression: "priority"
                   }
                 ],
-                attrs: { type: "checkbox", value: "Ignore", size: "22" },
-                domProps: {
-                  checked: Array.isArray(_vm.priority)
-                    ? _vm._i(_vm.priority, "Ignore") > -1
-                    : _vm.priority
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.priority,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = "Ignore",
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.priority = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.priority = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.priority = $$c
-                    }
-                  }
-                }
-              }),
-              _vm._v(" Ignore "),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.priority,
-                    expression: "priority"
-                  }
-                ],
                 attrs: { type: "checkbox", value: "Optional", size: "22" },
                 domProps: {
                   checked: Array.isArray(_vm.priority)
@@ -60413,19 +60523,51 @@ var render = function() {
                 }
               }),
               _vm._v(" Optional "),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.priority,
+                    expression: "priority"
+                  }
+                ],
+                attrs: { type: "checkbox", value: "Ignore", size: "22" },
+                domProps: {
+                  checked: Array.isArray(_vm.priority)
+                    ? _vm._i(_vm.priority, "Ignore") > -1
+                    : _vm.priority
+                },
+                on: {
+                  change: function($event) {
+                    var $$a = _vm.priority,
+                      $$el = $event.target,
+                      $$c = $$el.checked ? true : false
+                    if (Array.isArray($$a)) {
+                      var $$v = "Ignore",
+                        $$i = _vm._i($$a, $$v)
+                      if ($$el.checked) {
+                        $$i < 0 && (_vm.priority = $$a.concat([$$v]))
+                      } else {
+                        $$i > -1 &&
+                          (_vm.priority = $$a
+                            .slice(0, $$i)
+                            .concat($$a.slice($$i + 1)))
+                      }
+                    } else {
+                      _vm.priority = $$c
+                    }
+                  }
+                }
+              }),
+              _vm._v(" Ignore "),
               _c("br")
             ]),
             _vm._v(" "),
-            _c("div", [
-              _c(
-                "p",
-                { attrs: { id: "err" } },
-                [_c("font", { attrs: { color: "red" } })],
-                1
-              )
-            ]),
-            _vm._v(" "),
             _c("div", { staticClass: "control" }, [
+              _c("br"),
               _c(
                 "button",
                 {

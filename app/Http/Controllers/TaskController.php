@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Carbon\Carbon;
 use App\Task;
 use App\Priority;
 use Illuminate\Http\Request;
@@ -93,7 +93,11 @@ class TaskController extends Controller
 
         $task->name=$request["name"];
         $task->status=$request["status"];
-        //$task->completed_at=$request["time"];
+        if($request["time"]!= null) {
+            $task->completed_at=Carbon::now();
+        }
+        else
+            $task->completed_at=null;
         $task->save();
 
         $priorityIds=[];
