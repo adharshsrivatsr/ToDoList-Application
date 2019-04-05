@@ -1833,12 +1833,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["initial_name", "initial_status", "initial_prio", "edit", "initial_id", "completed_at", "updated_at"],
   data: function data() {
     return {
-      //    name:"",
-      //     id:"",
       time: ""
     };
   },
@@ -1852,6 +1851,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     editVal: function editVal() {
       this.edit = 1;
+      document.getElementById("input").style.border = true;
     },
     onSubmit: function onSubmit() {
       if (this.initial_status == 0) {
@@ -1874,7 +1874,7 @@ __webpack_require__.r(__webpack_exports__);
         time: this.time,
         priority: this.initial_prio,
         status: this.initial_status
-      }); //    this.showModal=false;
+      }); // this.showModal=false;
       // this.getTasks();
 
       window.location.reload(); // $('#showModal').modal('hide');
@@ -1908,6 +1908,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Edit_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Edit.vue */ "./resources/js/components/Edit.vue");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
 //
 //
 //
@@ -2028,7 +2029,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     editRow: function editRow(id) {
       var _this2 = this;
 
-      //   this.showModal= id;
+      // this.showModal= id;
       var test = this.items.find(function (x) {
         return x.id === id;
       });
@@ -2041,8 +2042,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.edit = 0;
       test.priorities.forEach(function (p) {
         return _this2.prio.push(p.priority);
-      });
-      console.log(this.completed_at);
+      }); //console.log(this.completed_at)
+
       var element = this.$refs.modal.$el;
       $(element).modal('show');
     }
@@ -59789,6 +59790,7 @@ var render = function() {
                 staticStyle: { border: "none", height: "30px" },
                 attrs: {
                   type: "text",
+                  id: "input",
                   readonly: _vm.edit == 0,
                   required: "",
                   minlength: "3",
@@ -60046,7 +60048,7 @@ var render = function() {
                 _vm.initial_status == "0"
                   ? _c("div", { staticClass: "alert alert-danger" }, [
                       _vm._v(
-                        "\n                The activity is incomplete!\n            "
+                        "\n                    The activity is incomplete!\n                "
                       )
                     ])
                   : _c(
@@ -60370,6 +60372,22 @@ var render = function() {
             staticClass: "jumbotron"
           },
           [
+            _c("div", { staticClass: "control" }, [
+              _c("br"),
+              _c(
+                "button",
+                {
+                  staticClass: "button is-primary",
+                  on: {
+                    click: function($event) {
+                      _vm.showInput = 0
+                    }
+                  }
+                },
+                [_vm._v("Submit!")]
+              )
+            ]),
+            _vm._v(" "),
             _c("div", { staticClass: "control" }, [
               _c("input", {
                 directives: [

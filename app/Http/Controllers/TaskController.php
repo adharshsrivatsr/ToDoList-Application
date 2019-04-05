@@ -90,7 +90,6 @@ class TaskController extends Controller
             'priority'=>'required'
             
         ]);
-
         $task->name=$request["name"];
         $task->status=$request["status"];
         if($request["time"]!= null) {
@@ -99,12 +98,10 @@ class TaskController extends Controller
         else
             $task->completed_at=null;
         $task->save();
-
         $priorityIds=[];
         foreach ($request->priority as $priority) {
             $priorityIds[]=Priority::where('priority',$priority)->first()->id;
         }
-        
         $task->priorities()->sync($priorityIds);
         
     }

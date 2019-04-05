@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-table  editable :items="items" :fields="fields" hover  fixed show-empty>
+        <b-table  editable :items="items" :fields="fields" hover fixed show-empty>
             <template slot='name' slot-scope="{item}">
                  <div> <b>{{item.name}}</b></div>
             </template>
@@ -8,8 +8,7 @@
             <template slot='status' slot-scope='{item}'>
                 <div v-if="item.status == '0'">
                    <div class="progress-bar bg-danger progress-bar-striped" style="width:50%">Incomplete</div>
-    
-                 </div>
+                </div>
                 
                 <div v-else>
                     <div class="progress-bar bg-success progress-bar-striped" style="width:100%">Completed</div>
@@ -27,7 +26,6 @@
            
             <template slot=' ' slot-scope='{item}'>
                 <div>
-                  
                     <button style="float:right" class="button btn-warning" @click="editRow(item.id)">Show more</button>
                     <edit ref="modal" :updated_at="updated_at" :completed_at="completed_at" :initial_id="id" :edit="edit" :initial_name="name" :initial_status="status" :initial_prio="prio"></edit>
                 </div>  
@@ -38,7 +36,10 @@
         <div class="container">
                <button class="button is-primary" style="float:right; border-radius: 55px;width: 55px; height: 55px;font-size: 35px; line-height: 5px" v-show="!showInput" @click="showInput= !showInput"><b >+</b>  </button>
                <div class="jumbotron" v-show='showInput'>
-                    <div class='control'>
+                     <div class='control'>
+                            <br><button class='button is-primary' @click='showInput=0'>Submit!</button>
+                        </div>
+                        <div class="control">
                             <input type='text' placeholder='Enter task name' v-model='name' required minlength=3 autocomplete="off" style='height:30px'> <br>
                         </div>
                         <br>
@@ -69,7 +70,6 @@
             return {
                 items: [],
                 showInput:0,
-              
                 prio:[ ], 
                 priority:[],
                 errors:[],
@@ -104,45 +104,38 @@
         },
         created: function () {
             this.getTasks()
-       
         },
         methods: {
             getTasks: function () {
-           
                 axios.get('/tasks')
                     .then(response => {
                         this.items = response.data
                   })  
-          
             },
 
             onSubmit: function() {
-              
-             if(this.name.length <3)
-            {
-                alert('Task name should have atleast 3 characters!')
-                return;
-            }
-            if(this.$data.priority.length==0 )
-             {
-                alert('Choose atleast one priority!!')   
-                return;
-            }
             
-           
-               
+                if(this.name.length <3)
+                {
+                    alert('Task name should have atleast 3 characters!')
+                    return;
+                }
+
+                if(this.$data.priority.length==0 )
+                {
+                    alert('Choose atleast one priority!!')   
+                    return;
+                }
+
                 axios.post('/tasks', this.$data);
                 this.showInput=0;
-               // this.getTasks();
-               window.location.reload();
-            
-            
+                // this.getTasks();
+                window.location.reload();
            },
 
             editRow: function(id) {
-             //   this.showModal= id;
+             // this.showModal= id;
                 let test = this.items.find(x=>x.id===id);
-                
                 this.name=test.name
                 this.id=test.id
                 this.status=test.status
@@ -151,9 +144,7 @@
                 this.prio=[ ]
                 this.edit=0
                 test.priorities.forEach(p => this.prio.push(p.priority))
-                
-                console.log(this.completed_at)
-
+                //console.log(this.completed_at)
                 let element = this.$refs.modal.$el
                 $(element).modal('show')
             }
