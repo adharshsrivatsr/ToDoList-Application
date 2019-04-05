@@ -1834,6 +1834,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["initial_name", "initial_status", "initial_prio", "edit", "initial_id", "completed_at", "updated_at"],
   data: function data() {
@@ -1851,7 +1868,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     editVal: function editVal() {
       this.edit = 1;
-      document.getElementById("input").style.border = true;
+      document.getElementById("input").style.border = "1px solid red";
+      console.log(document.getElementById("input").style.border);
     },
     onSubmit: function onSubmit() {
       if (this.initial_status == 0) {
@@ -1969,6 +1987,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2010,6 +2029,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.items = response.data;
       });
     },
+    showIn: function showIn() {
+      this.showInput = !this.showInput;
+      this.name = "";
+    },
     onSubmit: function onSubmit() {
       if (this.name.length < 3) {
         alert('Task name should have atleast 3 characters!');
@@ -2046,6 +2069,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       var element = this.$refs.modal.$el;
       $(element).modal('show');
+      this.showInput = 0;
     }
   }
 });
@@ -59777,36 +59801,78 @@ var render = function() {
       _c("div", { staticClass: "modal-dialog" }, [
         _c("div", { staticClass: "modal-content" }, [
           _c("div", { staticClass: "modal-header" }, [
-            _c("div", { staticClass: "control" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.initial_name,
-                    expression: "initial_name"
-                  }
-                ],
-                staticStyle: { border: "none", height: "30px" },
-                attrs: {
-                  type: "text",
-                  id: "input",
-                  readonly: _vm.edit == 0,
-                  required: "",
-                  minlength: "3",
-                  autocomplete: "off"
-                },
-                domProps: { value: _vm.initial_name },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+            _vm.edit == 0
+              ? _c("div", { staticClass: "control" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.initial_name,
+                        expression: "initial_name"
+                      }
+                    ],
+                    staticStyle: {
+                      border: "none",
+                      height: "40px",
+                      "font-weight": "bold"
+                    },
+                    attrs: {
+                      size: "30",
+                      type: "text",
+                      id: "input",
+                      readonly: "",
+                      autocomplete: "off"
+                    },
+                    domProps: { value: _vm.initial_name },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.initial_name = $event.target.value
+                      }
                     }
-                    _vm.initial_name = $event.target.value
-                  }
-                }
-              })
-            ]),
+                  })
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.edit == 1
+              ? _c("div", { staticClass: "control" }, [
+                  _c("form", { staticClass: "form-horizontal" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group has-warning has-feedback" },
+                      [
+                        _c("div", { staticClass: "col-sm-10" }, [
+                          _c("b", [_vm._v(" Edit task name: ")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.initial_name,
+                                expression: "initial_name"
+                              }
+                            ],
+                            attrs: { type: "text", autocomplete: "off" },
+                            domProps: { value: _vm.initial_name },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.initial_name = $event.target.value
+                              }
+                            }
+                          })
+                        ])
+                      ]
+                    )
+                  ])
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c(
               "button",
@@ -59826,173 +59892,194 @@ var render = function() {
           _c("div", { staticClass: "modal-body" }, [
             _vm.edit == 1
               ? _c("div", { staticClass: "control" }, [
-                  _c("pre", { staticClass: "scrollable" }, [
-                    _vm._v("                        "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.initial_prio,
-                          expression: "initial_prio"
-                        }
-                      ],
-                      attrs: { type: "checkbox", value: "Important" },
-                      domProps: {
-                        checked: Array.isArray(_vm.initial_prio)
-                          ? _vm._i(_vm.initial_prio, "Important") > -1
-                          : _vm.initial_prio
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.initial_prio,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = "Important",
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.initial_prio = $$a.concat([$$v]))
+                  _c(
+                    "div",
+                    {
+                      staticClass: "jumbotron",
+                      staticStyle: { "text-align": "left" }
+                    },
+                    [
+                      _c("b", [_vm._v("Choose priority information : ")]),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.initial_prio,
+                            expression: "initial_prio"
+                          }
+                        ],
+                        attrs: {
+                          type: "checkbox",
+                          value: "Urgent",
+                          size: "22"
+                        },
+                        domProps: {
+                          checked: Array.isArray(_vm.initial_prio)
+                            ? _vm._i(_vm.initial_prio, "Urgent") > -1
+                            : _vm.initial_prio
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.initial_prio,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = "Urgent",
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.initial_prio = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.initial_prio = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
                             } else {
-                              $$i > -1 &&
-                                (_vm.initial_prio = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
+                              _vm.initial_prio = $$c
                             }
-                          } else {
-                            _vm.initial_prio = $$c
                           }
                         }
-                      }
-                    }),
-                    _vm._v(" Important "),
-                    _c("br"),
-                    _vm._v("\n                        "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.initial_prio,
-                          expression: "initial_prio"
-                        }
-                      ],
-                      attrs: { type: "checkbox", value: "Urgent", size: "22" },
-                      domProps: {
-                        checked: Array.isArray(_vm.initial_prio)
-                          ? _vm._i(_vm.initial_prio, "Urgent") > -1
-                          : _vm.initial_prio
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.initial_prio,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = "Urgent",
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.initial_prio = $$a.concat([$$v]))
+                      }),
+                      _vm._v(" Urgent "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.initial_prio,
+                            expression: "initial_prio"
+                          }
+                        ],
+                        attrs: { type: "checkbox", value: "Important" },
+                        domProps: {
+                          checked: Array.isArray(_vm.initial_prio)
+                            ? _vm._i(_vm.initial_prio, "Important") > -1
+                            : _vm.initial_prio
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.initial_prio,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = "Important",
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.initial_prio = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.initial_prio = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
                             } else {
-                              $$i > -1 &&
-                                (_vm.initial_prio = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
+                              _vm.initial_prio = $$c
                             }
-                          } else {
-                            _vm.initial_prio = $$c
                           }
                         }
-                      }
-                    }),
-                    _vm._v(" Urgent "),
-                    _c("br"),
-                    _vm._v("\n                        "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.initial_prio,
-                          expression: "initial_prio"
-                        }
-                      ],
-                      attrs: {
-                        type: "checkbox",
-                        value: "Optional",
-                        size: "22"
-                      },
-                      domProps: {
-                        checked: Array.isArray(_vm.initial_prio)
-                          ? _vm._i(_vm.initial_prio, "Optional") > -1
-                          : _vm.initial_prio
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.initial_prio,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = "Optional",
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.initial_prio = $$a.concat([$$v]))
+                      }),
+                      _vm._v(" Important "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.initial_prio,
+                            expression: "initial_prio"
+                          }
+                        ],
+                        attrs: {
+                          type: "checkbox",
+                          value: "Optional",
+                          size: "22"
+                        },
+                        domProps: {
+                          checked: Array.isArray(_vm.initial_prio)
+                            ? _vm._i(_vm.initial_prio, "Optional") > -1
+                            : _vm.initial_prio
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.initial_prio,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = "Optional",
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.initial_prio = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.initial_prio = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
                             } else {
-                              $$i > -1 &&
-                                (_vm.initial_prio = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
+                              _vm.initial_prio = $$c
                             }
-                          } else {
-                            _vm.initial_prio = $$c
                           }
                         }
-                      }
-                    }),
-                    _vm._v(" Optional "),
-                    _c("br"),
-                    _vm._v("\n                        "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.initial_prio,
-                          expression: "initial_prio"
-                        }
-                      ],
-                      attrs: { type: "checkbox", value: "Ignore", size: "22" },
-                      domProps: {
-                        checked: Array.isArray(_vm.initial_prio)
-                          ? _vm._i(_vm.initial_prio, "Ignore") > -1
-                          : _vm.initial_prio
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.initial_prio,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = "Ignore",
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.initial_prio = $$a.concat([$$v]))
+                      }),
+                      _vm._v(" Optional "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.initial_prio,
+                            expression: "initial_prio"
+                          }
+                        ],
+                        attrs: {
+                          type: "checkbox",
+                          value: "Ignore",
+                          size: "22"
+                        },
+                        domProps: {
+                          checked: Array.isArray(_vm.initial_prio)
+                            ? _vm._i(_vm.initial_prio, "Ignore") > -1
+                            : _vm.initial_prio
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.initial_prio,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = "Ignore",
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.initial_prio = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.initial_prio = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
                             } else {
-                              $$i > -1 &&
-                                (_vm.initial_prio = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
+                              _vm.initial_prio = $$c
                             }
-                          } else {
-                            _vm.initial_prio = $$c
                           }
                         }
-                      }
-                    }),
-                    _vm._v(" Ignore "),
-                    _c("br"),
-                    _vm._v("\n                    ")
-                  ])
+                      }),
+                      _vm._v(" Ignore "),
+                      _c("br")
+                    ]
+                  )
                 ])
               : _c(
                   "div",
@@ -60005,7 +60092,7 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       p == "Important"
-                        ? _c("span", { staticClass: "badge badge-primary" }, [
+                        ? _c("span", { staticClass: "badge badge-warning" }, [
                             _vm._v("Important")
                           ])
                         : _vm._e(),
@@ -60029,10 +60116,10 @@ var render = function() {
             _c("br"),
             _vm._v(" "),
             _vm.edit == 0
-              ? _c("div", [
+              ? _c("div", { staticClass: "alert alert-info" }, [
                   _c("i", {
                     staticClass: "fa fa-clock-o",
-                    staticStyle: { "font-size": "36px" }
+                    staticStyle: { "font-size": "26px" }
                   }),
                   _vm._v(
                     " The task was recently updated on " +
@@ -60067,6 +60154,8 @@ var render = function() {
                     )
               ])
             : _c("div", [
+                _vm._m(0),
+                _vm._v(" "),
                 _c(
                   "div",
                   {
@@ -60084,7 +60173,7 @@ var render = function() {
                         }
                       ],
                       staticClass: "custom-control-input",
-                      attrs: { type: "checkbox", id: "switch1" },
+                      attrs: { type: "checkbox", size: "42", id: "switch1" },
                       domProps: {
                         checked: Array.isArray(_vm.initial_status)
                           ? _vm._i(_vm.initial_status, null) > -1
@@ -60122,7 +60211,11 @@ var render = function() {
                             staticClass: "custom-control-label",
                             attrs: { for: "switch1" }
                           },
-                          [_c("b", [_vm._v(" Incomplete ")])]
+                          [
+                            _c("b", { staticStyle: { color: "red" } }, [
+                              _vm._v(" Incomplete ")
+                            ])
+                          ]
                         )
                       : _vm._e(),
                     _vm._v(" "),
@@ -60133,7 +60226,11 @@ var render = function() {
                             staticClass: "custom-control-label",
                             attrs: { for: "switch1" }
                           },
-                          [_c("b", [_vm._v("Complete")])]
+                          [
+                            _c("b", { staticStyle: { color: "green" } }, [
+                              _vm._v("Complete")
+                            ])
+                          ]
                         )
                       : _vm._e()
                   ]
@@ -60179,7 +60276,16 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "container" }, [
+      _c("b", { staticStyle: { align: "left" } }, [_vm._v(" Change status : ")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -60265,7 +60371,7 @@ var render = function() {
                     : _vm._e(),
                   _vm._v(" "),
                   prio.priority == "Important"
-                    ? _c("span", { staticClass: "badge badge-primary" }, [
+                    ? _c("span", { staticClass: "badge badge-warning" }, [
                         _vm._v("Important")
                       ])
                     : _vm._e(),
@@ -60328,36 +60434,33 @@ var render = function() {
         ])
       }),
       _vm._v(" "),
-      _c("div", { staticClass: "container" }, [
-        _c(
-          "button",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: !_vm.showInput,
-                expression: "!showInput"
-              }
-            ],
-            staticClass: "button is-primary",
-            staticStyle: {
-              float: "right",
-              "border-radius": "55px",
-              width: "55px",
-              height: "55px",
-              "font-size": "35px",
-              "line-height": "5px"
-            },
-            on: {
-              click: function($event) {
-                _vm.showInput = !_vm.showInput
-              }
+      _c(
+        "button",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: !_vm.showInput,
+              expression: "!showInput"
             }
+          ],
+          staticClass: "button is-primary",
+          staticStyle: {
+            float: "right",
+            "border-radius": "55px",
+            width: "55px",
+            height: "55px",
+            "font-size": "35px",
+            "line-height": "5px"
           },
-          [_c("b", [_vm._v("+")])]
-        ),
-        _vm._v(" "),
+          attrs: { title: "Add Task" },
+          on: { click: _vm.showIn }
+        },
+        [_c("b", [_vm._v("+")])]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "container" }, [
         _c(
           "div",
           {
@@ -60369,24 +60472,32 @@ var render = function() {
                 expression: "showInput"
               }
             ],
-            staticClass: "jumbotron"
+            staticClass: "jumbotron",
+            staticStyle: { "background-color": "grey" }
           },
           [
-            _c("div", { staticClass: "control" }, [
-              _c("br"),
-              _c(
-                "button",
-                {
-                  staticClass: "button is-primary",
-                  on: {
-                    click: function($event) {
-                      _vm.showInput = 0
-                    }
+            _c(
+              "button",
+              {
+                staticClass: "button",
+                staticStyle: { float: "right" },
+                on: {
+                  click: function($event) {
+                    _vm.showInput = 0
                   }
-                },
-                [_vm._v("Submit!")]
-              )
-            ]),
+                }
+              },
+              [
+                _c("i", {
+                  staticClass: "fa fa-close",
+                  staticStyle: { "font-size": "20px", color: "red" }
+                })
+              ]
+            ),
+            _vm._v(" "),
+            _c("h3", [_vm._v(" New Task Details ")]),
+            _vm._v(" "),
+            _c("br"),
             _vm._v(" "),
             _c("div", { staticClass: "control" }, [
               _c("input", {
@@ -60432,46 +60543,6 @@ var render = function() {
                     expression: "priority"
                   }
                 ],
-                attrs: { type: "checkbox", value: "Important" },
-                domProps: {
-                  checked: Array.isArray(_vm.priority)
-                    ? _vm._i(_vm.priority, "Important") > -1
-                    : _vm.priority
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.priority,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = "Important",
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.priority = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.priority = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.priority = $$c
-                    }
-                  }
-                }
-              }),
-              _vm._v(" Important "),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.priority,
-                    expression: "priority"
-                  }
-                ],
                 attrs: { type: "checkbox", value: "Urgent", size: "22" },
                 domProps: {
                   checked: Array.isArray(_vm.priority)
@@ -60501,6 +60572,46 @@ var render = function() {
                 }
               }),
               _vm._v(" Urgent "),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.priority,
+                    expression: "priority"
+                  }
+                ],
+                attrs: { type: "checkbox", value: "Important" },
+                domProps: {
+                  checked: Array.isArray(_vm.priority)
+                    ? _vm._i(_vm.priority, "Important") > -1
+                    : _vm.priority
+                },
+                on: {
+                  change: function($event) {
+                    var $$a = _vm.priority,
+                      $$el = $event.target,
+                      $$c = $$el.checked ? true : false
+                    if (Array.isArray($$a)) {
+                      var $$v = "Important",
+                        $$i = _vm._i($$a, $$v)
+                      if ($$el.checked) {
+                        $$i < 0 && (_vm.priority = $$a.concat([$$v]))
+                      } else {
+                        $$i > -1 &&
+                          (_vm.priority = $$a
+                            .slice(0, $$i)
+                            .concat($$a.slice($$i + 1)))
+                      }
+                    } else {
+                      _vm.priority = $$c
+                    }
+                  }
+                }
+              }),
+              _vm._v(" Important "),
               _c("br"),
               _vm._v(" "),
               _c("input", {

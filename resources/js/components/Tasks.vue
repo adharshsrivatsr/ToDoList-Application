@@ -18,7 +18,7 @@
             <template slot='priority' slot-scope='{item}'>
                 <b v-for='prio in item.priorities' :key="prio.id">
                     <span v-if="prio.priority=='Urgent'" class="badge badge-danger">Urgent</span>
-                    <span v-if="prio.priority=='Important'" class="badge badge-primary">Important</span>
+                    <span v-if="prio.priority=='Important'" class="badge badge-warning">Important</span>
                     <span v-if="prio.priority=='Optional'" class="badge badge-info">Optional</span> 
                     <span v-if="prio.priority=='Ignore'" class="badge badge-secondary">Ignore</span>
                 </b>
@@ -32,20 +32,21 @@
             </template>
      
         </b-table>
-
+        <button title="Add Task"  class="button is-primary" style="float:right; border-radius: 55px;width: 55px; height: 55px;font-size: 35px; line-height: 5px" v-show="!showInput" @click="showIn"><b >+</b>  </button>
+               
         <div class="container">
-               <button class="button is-primary" style="float:right; border-radius: 55px;width: 55px; height: 55px;font-size: 35px; line-height: 5px" v-show="!showInput" @click="showInput= !showInput"><b >+</b>  </button>
-               <div class="jumbotron" v-show='showInput'>
-                     <div class='control'>
-                            <br><button class='button is-primary' @click='showInput=0'>Submit!</button>
-                        </div>
+               <div style="background-color: grey" class="jumbotron" v-show='showInput'>
+                   <button style="float:right" class='button' @click='showInput=0'><i class="fa fa-close" style="font-size:20px;color:red"></i>
+</button>
+                      <h3> New Task Details </h3>
+                      <br>
                         <div class="control">
                             <input type='text' placeholder='Enter task name' v-model='name' required minlength=3 autocomplete="off" style='height:30px'> <br>
                         </div>
                         <br>
                         <div class='control'>
-                            <input type='checkbox' value='Important' v-model='priority' > Important <br>
                             <input type='checkbox' value='Urgent' size='22' v-model='priority' /> Urgent <br>
+                            <input type='checkbox' value='Important' v-model='priority' > Important <br>
                             <input type='checkbox' value='Optional' size='22' v-model='priority'/> Optional <br>
                             <input type='checkbox' value='Ignore' size='22' v-model='priority' /> Ignore <br>
                         </div>
@@ -113,6 +114,12 @@
                   })  
             },
 
+            showIn: function()
+            {
+                this.showInput=!this.showInput
+                this.name=""
+            },
+
             onSubmit: function() {
             
                 if(this.name.length <3)
@@ -147,6 +154,7 @@
                 //console.log(this.completed_at)
                 let element = this.$refs.modal.$el
                 $(element).modal('show')
+                this.showInput=0;
             }
         }
     }

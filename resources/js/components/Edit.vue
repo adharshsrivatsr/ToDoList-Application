@@ -3,9 +3,21 @@
     <div class="modal-dialog" >
         <div class="modal-content">
             <div class="modal-header">
-               <div class='control'>
-                    <input style="border:none; height:30px" type="text" id="input" :readonly="edit==0" v-model="initial_name" required minlength=3 autocomplete="off">
+               <div v-if="edit==0" class='control'>
+                    <input style="border:none; height:40px; font-weight:bold" size='30' type="text" id="input" readonly v-model="initial_name" autocomplete="off">
                  </div>
+
+                <div v-if="edit==1" class='control'>
+                    
+                    <form class="form-horizontal">
+                    <div class="form-group has-warning has-feedback">
+                      <div class="col-sm-10">
+                          <b> Edit task name: </b> 
+                            <input type="text" v-model="initial_name" autocomplete="off">
+                        </div>
+                    </div>
+                    </form>
+                </div>
                 <button type="button" class="close" data-dismiss="modal"  @click="edit=0">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -13,18 +25,19 @@
        
             <div class="modal-body">
                 <div v-if="edit==1" class='control'>
-                    <pre class="scrollable">
-                        <input type='checkbox' value='Important' v-model='initial_prio' > Important <br>
+                     <div class="jumbotron" style="text-align:left">
+                        <b>Choose priority information : </b> <br>
                         <input type='checkbox' value='Urgent' size='22' v-model='initial_prio'/> Urgent </br>
+                        <input type='checkbox' value='Important' v-model='initial_prio' > Important <br>
                         <input type='checkbox' value='Optional' size='22' v-model='initial_prio'/> Optional <br>
                         <input type='checkbox' value='Ignore' size='22' v-model='initial_prio' /> Ignore <br>
-                    </pre>
+                        </div>
                 </div>
             
                <div v-else>
-                    <b v-for='p in initial_prio' :key="p">
+                  <b v-for='p in initial_prio' :key="p">
                         <span v-if="p=='Urgent'" class="badge badge-danger">Urgent</span>
-                        <span v-if="p=='Important'" class="badge badge-primary">Important</span>
+                        <span v-if="p=='Important'" class="badge badge-warning">Important</span>
                         <span v-if="p=='Optional'" class="badge badge-info">Optional</span> 
                         <span v-if="p=='Ignore'" class="badge badge-secondary">Ignore</span>
                     </b>
@@ -32,8 +45,8 @@
 
                 <br>
 
-                <div v-if="edit==0">
-                    <i class="fa fa-clock-o" style="font-size:36px"></i> The task was recently updated on {{updated_at}} 
+                <div class="alert alert-info" v-if="edit==0">
+                    <i class="fa fa-clock-o" style="font-size:26px"></i> The task was recently updated on {{updated_at}} 
                 </div>
             
             </div>
@@ -49,10 +62,14 @@
             </div>
 
             <div v-else>
+                <div class="container">
+                    <b style="align:left"> Change status : </b>
+                </div>
                 <div class="custom-control custom-switch" style="text-align:center">
-                    <input type="checkbox" class="custom-control-input" v-model="initial_status" @click="recordTime" id="switch1">
-                    <label class="custom-control-label" v-if="initial_status==0" for="switch1"><b> Incomplete </b></label>
-                    <label class="custom-control-label" v-if="initial_status==1" for="switch1"><b>Complete</b></label>
+                  
+                    <input type="checkbox" size="42" class="custom-control-input" v-model="initial_status" @click="recordTime" id="switch1">
+                    <label class="custom-control-label" v-if="initial_status==0" for="switch1"><b style="color:red"> Incomplete </b></label>
+                    <label class="custom-control-label" v-if="initial_status==1" for="switch1"><b style="color:green">Complete</b></label>
                 </div>
             </div>
                 
@@ -76,7 +93,6 @@ export default {
     data() {
     return {
         time:"",
- 
     }
     },
     methods:{
@@ -91,7 +107,8 @@ export default {
            
         editVal:function() {
             this.edit=1
-            document.getElementById("input").style.border=true;
+            document.getElementById("input").style.border="1px solid red"
+            console.log(document.getElementById("input").style.border)
         },
     
         onSubmit:function() {
